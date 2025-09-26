@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import {
   Dialog,
   DialogContent,
@@ -12,6 +12,11 @@ import { Button } from "@/components/ui/button";
 import { SessionDetail } from "../medical-agent/[sessionId]/page";
 import moment from "moment";
 
+
+// @ts-ignore
+import domtoimage from "dom-to-image-more";
+import jsPDF from "jspdf";
+
 type Props = {
   record: SessionDetail;
 };
@@ -19,6 +24,8 @@ type Props = {
 function ViewReportDialog({ record }: Props) {
   const report: any = record?.report;
   const [formattedDate, setFormattedDate] = useState("");
+  const reportRef = useRef<HTMLDivElement>(null);
+
   useEffect(() => {
     if (typeof window !== "undefined") {
       setFormattedDate(
@@ -26,6 +33,17 @@ function ViewReportDialog({ record }: Props) {
       );
     }
   }, [record?.createdOn]);
+  
+  // ✅ Download as PNG Image
+  const downloadImage = async () => {
+    if (!reportRef.current) return;
+
+    const dataUrl = await domtoimage.toPng(reportRef.current, { quality: 1 });
+    const link = document.createElement("a");
+    link.href = dataUrl;
+    link.download = `medical_report_${record?.id || "session"}.png`;
+    link.click();
+  };
 
   return (
     <Dialog>
@@ -38,11 +56,23 @@ function ViewReportDialog({ record }: Props) {
         <DialogHeader>
           <DialogDescription>
             <DialogTitle className="text-2xl font-bold text-blue-500 mb-4 text-center">
-               Medical AI Voice Agent Report
+              Medical AI Voice Agent Report
             </DialogTitle>
           </DialogDescription>
         </DialogHeader>
-        <div className="space-y-6 text-gray-800 text-sm">
+
+        {/* ✅ Download Buttons */}
+        <div className="flex justify-end gap-2 mb-4">
+          <Button size="sm" variant="outline" onClick={downloadImage}>
+            Download Image
+          </Button>
+        </div>
+
+        {/* ✅ Report Content */}
+        <div
+          ref={reportRef}
+          className="space-y-6 text-gray-800 text-sm bg-white p-4 rounded-md"
+        >
           {/* Session Info */}
           <div>
             <h2 className="font-bold text-blue-500 text-lg mb-1">
@@ -57,7 +87,6 @@ function ViewReportDialog({ record }: Props) {
                 <span className="font-bold">User:</span> {report?.user || "-"}
               </div>
               <div>
-                
                 <span className="font-bold">Consulted On:</span>{" "}
                 <span suppressHydrationWarning>{formattedDate}</span>
               </div>

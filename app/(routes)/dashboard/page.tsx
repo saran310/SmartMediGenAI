@@ -3,6 +3,7 @@ import HistoryList from './_components/HistoryList'
 import { Button } from '@/components/ui/button'
 import DoctorsAgentList from './_components/DoctorsAgentList'
 import AddNewSessionDialog from './_components/AddNewSessionDialog'
+import Chatbot from './_components/Chatbot'   // ✅ import chatbot
 
 function Dashboard() {
   return (
@@ -13,6 +14,9 @@ function Dashboard() {
       </div>
       <HistoryList/>
       <DoctorsAgentList/>
+
+      {/* ✅ Floating chatbot assistant */}
+      <Chatbot />
     </div>
   )
 }
