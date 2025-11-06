@@ -56,7 +56,7 @@ function ViewReportDialog({ record }: Props) {
         <DialogHeader>
           <DialogDescription>
             <DialogTitle className="text-2xl font-bold text-blue-500 mb-4 text-center">
-              Medical AI Voice Agent Report
+              SmartMediGenAI Voice Agent Report
             </DialogTitle>
           </DialogDescription>
         </DialogHeader>
